@@ -32,3 +32,6 @@ migrateup:
 
 migratedown:
 	@migrate -path db/migration -database "postgresql://peter:password@localhost:5432/$(DB_NAME)?sslmode=disable" -verbose down
+
+sqlc:
+	@sqlc generate
