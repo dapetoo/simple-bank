@@ -1,6 +1,6 @@
 DB_NAME=simplebank
 
-.PHONY: postgres createdb dropdb
+.PHONY: postgres createdb dropdb stop_postgres delete_postgres migrateup migratedown
 
 postgres:
 	@echo "Starting postgres..."
@@ -27,6 +27,8 @@ dropdb:
 	@docker exec -it postgres dropdb -U peter -h localhost -p 5432 -e $(DB_NAME)
 	@echo "Database dropped."
 
-.PHONY: migrateup migratedown
 migrateup:
 	@migrate -path db/migration -database "postgresql://peter:password@localhost:5432/$(DB_NAME)?sslmode=disable" -verbose up
+
+migratedown:
+	@migrate -path db/migration -database "postgresql://peter:password@localhost:5432/$(DB_NAME)?sslmode=disable" -verbose down
