@@ -36,8 +36,14 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getAccountStmt, err = db.PrepareContext(ctx, getAccount); err != nil {
 		return nil, fmt.Errorf("error preparing query GetAccount: %w", err)
 	}
+	if q.getEntryStmt, err = db.PrepareContext(ctx, getEntry); err != nil {
+		return nil, fmt.Errorf("error preparing query GetEntry: %w", err)
+	}
 	if q.listAccountsStmt, err = db.PrepareContext(ctx, listAccounts); err != nil {
 		return nil, fmt.Errorf("error preparing query ListAccounts: %w", err)
+	}
+	if q.listEntriesStmt, err = db.PrepareContext(ctx, listEntries); err != nil {
+		return nil, fmt.Errorf("error preparing query ListEntries: %w", err)
 	}
 	if q.updateAccountStmt, err = db.PrepareContext(ctx, updateAccount); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateAccount: %w", err)
@@ -67,9 +73,19 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getAccountStmt: %w", cerr)
 		}
 	}
+	if q.getEntryStmt != nil {
+		if cerr := q.getEntryStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getEntryStmt: %w", cerr)
+		}
+	}
 	if q.listAccountsStmt != nil {
 		if cerr := q.listAccountsStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing listAccountsStmt: %w", cerr)
+		}
+	}
+	if q.listEntriesStmt != nil {
+		if cerr := q.listEntriesStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listEntriesStmt: %w", cerr)
 		}
 	}
 	if q.updateAccountStmt != nil {
@@ -120,7 +136,9 @@ type Queries struct {
 	createAccountStmt *sql.Stmt
 	deleteAccountStmt *sql.Stmt
 	getAccountStmt    *sql.Stmt
+	getEntryStmt      *sql.Stmt
 	listAccountsStmt  *sql.Stmt
+	listEntriesStmt   *sql.Stmt
 	updateAccountStmt *sql.Stmt
 }
 
@@ -132,7 +150,9 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		createAccountStmt: q.createAccountStmt,
 		deleteAccountStmt: q.deleteAccountStmt,
 		getAccountStmt:    q.getAccountStmt,
+		getEntryStmt:      q.getEntryStmt,
 		listAccountsStmt:  q.listAccountsStmt,
+		listEntriesStmt:   q.listEntriesStmt,
 		updateAccountStmt: q.updateAccountStmt,
 	}
 }
