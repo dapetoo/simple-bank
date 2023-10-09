@@ -1,6 +1,6 @@
 DB_NAME=simplebank
 
-.PHONY: postgres createdb dropdb stop_postgres delete_postgres migrateup migratedown
+.PHONY: postgres createdb dropdb stop_postgres delete_postgres migrateup migratedown sqlc test
 
 postgres:
 	@echo "Starting postgres..."
@@ -35,3 +35,6 @@ migratedown:
 
 sqlc:
 	@sqlc generate
+
+test:
+	@go test -v -cover ./...
