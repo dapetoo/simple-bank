@@ -1,1 +1,1 @@
-# simple-bank
+# Simple Bank with Golang
