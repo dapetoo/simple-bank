@@ -3,7 +3,7 @@ name: ci-test
 on:
   push:
     branches: [ database-design, main ]
-   pull_request:
+  pull_request:
     branches: [ database-design, main ]
 
 jobs:
