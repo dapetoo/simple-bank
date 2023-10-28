@@ -18,8 +18,8 @@ jobs:
         image: postgres:15.3-alpine
         # Provide the password for postgres
         env:
-          POSTGRES_PASSWORD: peter
-          POSTGRES_USER: password
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: peter
           POSTGRES_DB: simplebank
         # Set health checks to wait until postgres has started
         options: >-
