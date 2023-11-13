@@ -1,6 +1,6 @@
 DB_NAME=simplebank
 
-.PHONY: postgres createdb dropdb stop_postgres delete_postgres migrateup migratedown sqlc test
+.PHONY: postgres createdb dropdb stop_postgres delete_postgres migrateup migratedown sqlc test server
 
 postgres:
 	@echo "Starting postgres..."
@@ -38,3 +38,6 @@ sqlc:
 
 test:
 	@go test -v -cover ./...
+
+server:
+	@go run main.go

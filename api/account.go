@@ -1,6 +1,9 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	db "github.com/dapetoo/simple-bank/db/sqlc"
+	"github.com/gin-gonic/gin"
+)
 
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
@@ -13,4 +16,22 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		ctx.JSON(400, errorResponse(err))
 		return
 	}
+
+	arg := db.CreateAccountParams{
+		Owner:    req.Owner,
+		Currency: req.Currency,
+		Balance:  0,
+	}
+
+	account, err := server.store.CreateAccount(ctx, arg)
+	if err != nil {
+		ctx.JSON(500, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(201, account)
+}
+
+func (server *Server) getAccount(ctx *gin.Context) {
+	
 }

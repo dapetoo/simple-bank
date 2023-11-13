@@ -17,9 +17,15 @@ func NewServer(store *db.Store) *Server {
 	router := gin.Default()
 
 	router.POST("/accounts", server.createAccount)
+	router.GET("/accounts/:id", server.getAccount)
 
 	server.router = router
 	return server
+}
+
+// Start runs the HTTP server on a specific address.
+func (server *Server) Start(address string) error {
+	return server.router.Run(address) // listen and serve on 0000000:8080 (for windows "localhost:8080")
 }
 
 func errorResponse(err error) gin.H {
