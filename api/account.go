@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	db "github.com/dapetoo/simple-bank/db/sqlc"
 	"github.com/gin-gonic/gin"
 )
@@ -46,7 +47,7 @@ func (server *Server) getAccount(ctx *gin.Context) {
 
 	account, err := server.store.GetAccount(ctx, req.ID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(404, errorResponse(err))
 			return
 		}
@@ -54,4 +55,29 @@ func (server *Server) getAccount(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, account)
+}
+
+type listAccountRequest struct {
+	PageID   int32 `form:"page_id" binding:"required,min=1"`
+	PageSize int32 `form:"page_size" binding:"require,min=5,max=10"`
+}
+
+func (server *Server) listAccount(ctx *gin.Context) {
+	var req listAccountRequest
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(400, errorResponse(err))
+		return
+	}
+
+	arg := db.ListAccountsParams{
+		Limit:  req.PageSize,
+		Offset: (req.PageID - 1) * req.PageSize,
+	}
+
+	accounts, err := server.store.ListAccounts(ctx, arg)
+	if err != nil {
+		ctx.JSON(500, errorResponse(err))
+	}
+
+	ctx.JSON(200, accounts)
 }
